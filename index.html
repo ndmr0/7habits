@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>7habits — Seven habits. Seven days. Better you.</title>
+    <style>
+      :root { color-scheme: light dark; }
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        margin: 0; min-height: 100vh; display: grid; place-items: center;
+        color: #f6f6fa; background: #09090f; text-align: center; padding: 40px 22px;
+        background-image:
+          radial-gradient(60% 45% at 18% 12%, hsl(280 70% 55% / .22), transparent),
+          radial-gradient(55% 40% at 85% 25%, hsl(210 80% 55% / .18), transparent),
+          radial-gradient(60% 45% at 75% 90%, hsl(145 65% 45% / .16), transparent),
+          radial-gradient(50% 40% at 12% 85%, hsl(25 90% 55% / .14), transparent);
+      }
+      .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 120px; margin: 0 auto 28px; }
+      .grid span { aspect-ratio: 1; border-radius: 5px; }
+      h1 { font-size: 2.4rem; margin: 0 0 8px; letter-spacing: -.02em; }
+      p.tag { color: #9d9db5; margin: 0 0 32px; font-size: 1.05rem; }
+      nav { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+      a { color: #c9c9d9; text-decoration: none; border: 1px solid rgba(255,255,255,.14);
+          padding: 10px 18px; border-radius: 999px; font-size: .95rem; }
+      a:hover { background: rgba(255,255,255,.06); color: #fff; }
+      footer { margin-top: 40px; color: #6f6f8c; font-size: .8rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="grid" id="g" aria-hidden="true"></div>
+      <h1>7habits</h1>
+      <p class="tag">Seven habits. Seven days. Better you.</p>
+      <nav>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
+        <a href="support.html">Support</a>
+      </nav>
+      <footer>Made by gen315.tech</footer>
+    </main>
+    <script>
+      const hues = [[280,70],[245,75],[210,80],[145,65],[45,90],[25,90],[0,72]];
+      const L = [72,66,60,54,48,42,36], g = document.getElementById("g");
+      for (let r = 0; r < 7; r++) for (let c = 0; c < 7; c++) {
+        const s = document.createElement("span");
+        s.style.background = `hsl(${hues[c][0]} ${hues[c][1]}% ${L[r]}%)`;
+        g.appendChild(s);
+      }
+    </script>
+  </body>
+</html>
