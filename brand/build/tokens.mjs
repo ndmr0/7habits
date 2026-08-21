@@ -47,6 +47,30 @@ export const BRAND = {
  */
 export const TIKTOK_SAFE = { top: 200, right: 240, bottom: 480, left: 90 };
 
+/**
+ * Facebook renders one uploaded cover at two different crops, so the artwork
+ * has to survive both:
+ *
+ *   desktop  820 x 312   full width, centre 312 of the height
+ *   mobile   640 x 360   full height, centre 640 of the width
+ *
+ * Exporting at 820x360 (here doubled to 1640x720 for retina) feeds both. What
+ * is guaranteed visible is the intersection — 640x312, centred — so all type
+ * and marks stay inside `safe`. The profile picture overlaps the bottom of the
+ * cover on both layouts, hence `avatarGuard`: keep the lower strip quiet.
+ *
+ * Meta changes these numbers between releases; treat as guidance, and if they
+ * move, edit here and rebuild.
+ */
+export const FACEBOOK_COVER = {
+  scale: 2,
+  base: { w: 820, h: 360 },
+  desktop: { w: 820, h: 312 },
+  mobile: { w: 640, h: 360 },
+  safe: { w: 640, h: 312 },
+  avatarGuard: 84, // px at 1x, measured up from the bottom edge
+};
+
 export function hslToHex(h, s, l) {
   s /= 100;
   l /= 100;

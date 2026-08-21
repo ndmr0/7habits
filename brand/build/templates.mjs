@@ -4,7 +4,16 @@
 // build script loads it in headless Chromium and screenshots the viewport, so
 // 1px here is 1px in the PNG.
 
-import { BRAND, INK, HABITS, TIKTOK_SAFE, auroraCss, habitHex, cell } from './tokens.mjs';
+import {
+  BRAND,
+  INK,
+  HABITS,
+  TIKTOK_SAFE,
+  FACEBOOK_COVER,
+  auroraCss,
+  habitHex,
+  cell,
+} from './tokens.mjs';
 import { gridCells, sevenMarkSvg, rampStripSvg, habitWeekSvg } from './marks.mjs';
 
 /** Short prompt shown on each habit card. Edit freely — pure marketing copy. */
@@ -380,6 +389,114 @@ export function xHeader({ w = 1500, h = 500, fontFace }) {
         </div>
         ${gridAt(260, { gap: 1.5, radius: 0.24 })}
       </div>`,
+  });
+}
+
+/* ---------------------------------------------------------------- facebook */
+
+/** Pixel geometry of the cover at export scale, shared by the art and its guide. */
+function fbCoverBox() {
+  const { scale, base, desktop, mobile, safe, avatarGuard } = FACEBOOK_COVER;
+  const w = base.w * scale;
+  const h = base.h * scale;
+  return {
+    w,
+    h,
+    scale,
+    safe: { w: safe.w * scale, h: safe.h * scale },
+    // how much each crop trims off the export, per side
+    trimY: ((base.h - desktop.h) / 2) * scale,
+    trimX: ((base.w - mobile.w) / 2) * scale,
+    guard: avatarGuard * scale,
+  };
+}
+
+/**
+ * Page cover.
+ *
+ * Deliberately carries no grid mark: the profile picture sits directly below
+ * the cover on both layouts and already *is* the mark, so repeating it here
+ * just stacks the same lattice on itself. The cover takes the wordmark, the
+ * tagline and the one claim that sells the app — the things a circular avatar
+ * can't say. The ramp stands in as the graphic element.
+ *
+ * Centred horizontally because the mobile crop centres, and lifted by
+ * `avatarGuard` so nothing tucks under the profile picture.
+ */
+export function fbCover({ fontFace } = {}) {
+  const box = fbCoverBox();
+  return page({
+    w: box.w,
+    h: box.h,
+    fontFace,
+    body: `<div class="aurora"></div>
+      <div class="layer" style="display:flex;flex-direction:column;align-items:center;
+                  justify-content:center;text-align:center;padding-bottom:${box.guard}px">
+        <div style="font-size:132px;font-weight:800;letter-spacing:-.05em;line-height:1">7habits</div>
+        <div style="font-size:40px;font-weight:500;color:${INK.muted};margin-top:22px;letter-spacing:-.012em">${
+          BRAND.tagline
+        }</div>
+        <div style="margin-top:30px">${rampStrip(440, 12)}</div>
+        <div style="font-size:27px;font-weight:500;color:${INK.dim};margin-top:26px">${
+          CTA.privacy
+        }</div>
+      </div>`,
+  });
+}
+
+/** Overlay showing what each crop keeps. Guide only — never upload this one. */
+export function fbCoverSafeAreas({ fontFace } = {}) {
+  const box = fbCoverBox();
+  const { desktop, mobile, safe } = FACEBOOK_COVER;
+
+  const band = (style, fill) =>
+    `<div style="position:absolute;${style};background:${fill}"></div>`;
+
+  const tag = (style, text, color) =>
+    `<div style="position:absolute;${style};font-size:19px;font-weight:700;
+       letter-spacing:.1em;color:${color};text-transform:uppercase">${text}</div>`;
+
+  return page({
+    w: box.w,
+    h: box.h,
+    fontFace,
+    body: `<div class="aurora"></div>
+      <div class="layer" style="display:grid;place-items:center;opacity:.2">${gridAt(300, {
+        gap: 1.5,
+        radius: 0.24,
+      })}</div>
+
+      ${band(`left:0;top:0;width:100%;height:${box.trimY}px`, 'rgba(255,64,84,.24)')}
+      ${band(`left:0;bottom:0;width:100%;height:${box.trimY}px`, 'rgba(255,64,84,.24)')}
+      ${band(`left:0;top:0;width:${box.trimX}px;height:100%`, 'rgba(255,176,64,.20)')}
+      ${band(`right:0;top:0;width:${box.trimX}px;height:100%`, 'rgba(255,176,64,.20)')}
+      ${band(
+        `left:0;bottom:${box.trimY}px;width:100%;height:${box.guard - box.trimY}px`,
+        'rgba(140,120,255,.22)',
+      )}
+
+      <div style="position:absolute;left:${box.trimX}px;top:${box.trimY}px;
+                  width:${box.safe.w}px;height:${box.safe.h}px;
+                  border:3px solid rgba(90,240,160,.9);border-radius:8px;
+                  display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div style="font-size:28px;font-weight:800;letter-spacing:.13em;color:#7ef0b4">ALWAYS VISIBLE</div>
+        <div style="font-size:21px;font-weight:600;color:#8fdcb4;margin-top:7px">${safe.w} &times; ${
+          safe.h
+        } at 1&times; &middot; both crops</div>
+      </div>
+
+      ${tag(`left:${box.trimX + 16}px;top:14px`, `desktop crops ${desktop.w}×${desktop.h}`, '#ffb3bd')}
+      ${tag(`left:16px;top:50%;`, `mobile ${mobile.w}×${mobile.h}`, '#ffd9a8')}
+      ${tag(
+        // centre the label in the guard band itself, not below it
+        `left:${box.trimX + 16}px;bottom:${box.trimY + (box.guard - box.trimY) / 2 - 10}px`,
+        'profile picture overlaps here',
+        '#c9bcff',
+      )}
+
+      <div style="position:absolute;right:20px;bottom:14px;font-size:19px;font-weight:600;color:${
+        INK.muted
+      }">${box.w} &times; ${box.h} &middot; guide only, do not publish</div>`,
   });
 }
 

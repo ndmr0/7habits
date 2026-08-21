@@ -4,6 +4,10 @@ Copy to paste and a first month of posts, built around the artwork in
 `export/`. Claims here match `terms.html` and `support.html` — see the
 [Claims](#claims-keep-these-honest) section before editing any of it.
 
+Covers TikTok, Instagram and X. Facebook has its own file —
+[`FACEBOOK-PAGE.md`](FACEBOOK-PAGE.md) — because the Page has fields and a
+cover-crop problem the others don't.
+
 ---
 
 ## Profile

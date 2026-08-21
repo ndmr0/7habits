@@ -17,7 +17,7 @@ import { mkdir, writeFile, readFile, access } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { INK, HABITS, habitHex, auroraCss } from './tokens.mjs';
+import { INK, HABITS, FACEBOOK_COVER, habitHex, auroraCss } from './tokens.mjs';
 import {
   gridMarkSvg,
   gridTileSvg,
@@ -33,6 +33,9 @@ const CACHE = join(HERE, '.fontcache');
 
 const FONT_CSS =
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
+
+const FB_W = FACEBOOK_COVER.base.w * FACEBOOK_COVER.scale;
+const FB_H = FACEBOOK_COVER.base.h * FACEBOOK_COVER.scale;
 
 /* ------------------------------------------------------------------- font */
 
@@ -172,6 +175,17 @@ async function main() {
     ],
     ['brand/export/x/header-1500x500.jpg', 1500, 500, T.xHeader({ fontFace })],
     ['brand/export/youtube/thumbnail-1280x720.jpg', 1280, 720, T.ytThumb({ fontFace })],
+
+    // facebook — only the cover is a ratio nothing else in the kit covers. The
+    // page's other slots reuse existing exports; see brand/FACEBOOK-PAGE.md.
+    [`brand/export/facebook/cover-${FB_W}x${FB_H}.jpg`, FB_W, FB_H, T.fbCover({ fontFace })],
+    [
+      `brand/export/facebook/cover-safe-areas-${FB_W}x${FB_H}.jpg`,
+      FB_W,
+      FB_H,
+      T.fbCoverSafeAreas({ fontFace }),
+    ],
+    ['brand/export/facebook/profile-360.png', 360, 360, T.profileGrid({ size: 360, fontFace })],
   ];
 
   // one card per habit
@@ -247,10 +261,20 @@ function contactSheet(jobs) {
     web: 'Web and link previews',
     tiktok: 'TikTok',
     instagram: 'Instagram',
+    facebook: 'Facebook',
     x: 'X',
     youtube: 'YouTube',
   };
-  const order = ['profile', 'app-icon', 'tiktok', 'instagram', 'x', 'youtube', 'web'];
+  const order = [
+    'profile',
+    'app-icon',
+    'tiktok',
+    'instagram',
+    'facebook',
+    'x',
+    'youtube',
+    'web',
+  ];
 
   const logoSection = () => {
     const svgs = written.filter((f) => f.startsWith('brand/logo/'));
