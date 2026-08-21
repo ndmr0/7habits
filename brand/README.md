@@ -5,6 +5,7 @@ Logo, app icon, and ready-to-upload social artwork for 7habits.
 - **[BRAND.md](BRAND.md)** — colours, type, the marks, and the rules
 - **[CONTENT-KIT.md](CONTENT-KIT.md)** — bio, hashtags, captions, and what to post
 - **[FACEBOOK-PAGE.md](FACEBOOK-PAGE.md)** — Page setup: fields, cover sizing, and copy
+- **[FACEBOOK-AGENT-PROMPT.md](FACEBOOK-AGENT-PROMPT.md)** — the same, as a brief to hand someone
 - `logo/` — vector marks and lockups (SVG)
 - `export/` — sized exports, ready to upload
 - `build/` — the generator; everything in `logo/` and `export/` comes from it

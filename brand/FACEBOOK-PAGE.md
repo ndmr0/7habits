@@ -7,6 +7,10 @@ fields to fill in, and copy for the first month. Claims match `terms.html` and
 Companion to [`CONTENT-KIT.md`](CONTENT-KIT.md), which covers TikTok, Instagram
 and X. Where the two overlap, this file wins for Facebook.
 
+Handing the setup to someone else? [`FACEBOOK-AGENT-PROMPT.md`](FACEBOOK-AGENT-PROMPT.md)
+is this file reshaped as a self-contained brief, with full post captions rather
+than openers. This file stays the source of truth for claims.
+
 > **On the numbers below.** Meta moves its image sizes and field limits between
 > releases, and they aren't verifiable from inside this repo. Treat them as
 > current-as-written, check anything that looks off, and if a size has moved,
