@@ -1,0 +1,5 @@
+# Inter is refetched from Google Fonts on demand by brand/build/build.mjs
+brand/build/.fontcache/
+
+node_modules/
+.DS_Store
