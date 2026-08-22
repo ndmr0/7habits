@@ -150,4 +150,13 @@ Both strings live in `CTA` in `brand/build/templates.mjs`. Change them there.
 - Stretch anything; every asset is a fixed pixel size for a reason.
 - Rebuild Apple's "Download on the App Store" badge by hand. Use the official
   artwork from Apple's marketing guidelines.
-- Publish `export/tiktok/safe-areas-1080x1920.jpg`. It's a working guide.
+- Publish any file with `safe-areas` in its name. Three exports are working
+  guides with coloured zone boxes drawn on them, not artwork:
+  `export/tiktok/safe-areas-1080x1920.jpg`,
+  `export/facebook/cover-safe-areas-1640x720.jpg`, and
+  `export/youtube/banner-safe-areas-2560x1440.jpg`.
+- Reposition a cover or banner in the platform's own cropper. They're composed
+  to survive that platform's crop; dragging them defeats it.
+- Pair a mark with its own avatar. The Facebook cover and YouTube banner sit
+  directly above the profile picture, so a grid mark on either stacks the same
+  lattice on itself.
