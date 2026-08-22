@@ -17,7 +17,14 @@ import { mkdir, writeFile, readFile, access } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { INK, HABITS, FACEBOOK_COVER, habitHex, auroraCss } from './tokens.mjs';
+import {
+  INK,
+  HABITS,
+  FACEBOOK_COVER,
+  YOUTUBE as YT,
+  habitHex,
+  auroraCss,
+} from './tokens.mjs';
 import {
   gridMarkSvg,
   gridTileSvg,
@@ -174,7 +181,59 @@ async function main() {
       T.coverBrand({ fontFace }),
     ],
     ['brand/export/x/header-1500x500.jpg', 1500, 500, T.xHeader({ fontFace })],
+
+    // youtube — the banner crops harder than anything else here: one 2560x1440
+    // upload, but only the centred 1546x423 survives on every device.
+    [
+      `brand/export/youtube/banner-${YT.banner.w}x${YT.banner.h}.jpg`,
+      YT.banner.w,
+      YT.banner.h,
+      T.ytBanner({ fontFace }),
+    ],
+    [
+      `brand/export/youtube/banner-safe-areas-${YT.banner.w}x${YT.banner.h}.jpg`,
+      YT.banner.w,
+      YT.banner.h,
+      T.ytBannerSafeAreas({ fontFace }),
+    ],
+    [
+      `brand/export/youtube/avatar-${YT.avatar}.png`,
+      YT.avatar,
+      YT.avatar,
+      T.profileGrid({ size: YT.avatar, fontFace }),
+    ],
+    // sits over live video, so it needs a transparent ground
+    [
+      `brand/export/youtube/watermark-${YT.watermark}.png`,
+      YT.watermark,
+      YT.watermark,
+      T.ytWatermark({ fontFace }),
+      { transparent: true },
+    ],
+    ['brand/export/youtube/end-screen-1280x720.jpg', 1280, 720, T.ytEndScreen({ fontFace })],
     ['brand/export/youtube/thumbnail-1280x720.jpg', 1280, 720, T.ytThumb({ fontFace })],
+    [
+      'brand/export/youtube/thumbnail-privacy-1280x720.jpg',
+      1280,
+      720,
+      T.ytThumb({
+        fontFace,
+        kicker: 'Privacy',
+        headline: 'It never<br/>leaves your<br/>phone.',
+        accent: habitHex(3),
+      }),
+    ],
+    [
+      'brand/export/youtube/thumbnail-cycle-1280x720.jpg',
+      1280,
+      720,
+      T.ytThumb({
+        fontFace,
+        kicker: 'Streaks',
+        headline: '49 days.<br/>One cycle.',
+        accent: habitHex(4),
+      }),
+    ],
 
     // facebook — only the cover is a ratio nothing else in the kit covers. The
     // page's other slots reuse existing exports; see brand/FACEBOOK-PAGE.md.
@@ -217,7 +276,7 @@ async function main() {
 
   console.log(`· rendering ${jobs.length} images`);
   const ctx = await browser.newContext({ deviceScaleFactor: 1 });
-  for (const [relPath, w, h, html] of jobs) {
+  for (const [relPath, w, h, html, opts = {}] of jobs) {
     const pg = await ctx.newPage();
     await pg.setViewportSize({ width: w, height: h });
     await pg.setContent(html, { waitUntil: 'load' });
@@ -229,7 +288,9 @@ async function main() {
     // Icons, avatars and marks stay PNG for crisp edges.
     const jpeg = relPath.endsWith('.jpg');
     await pg.screenshot(
-      jpeg ? { path: abs, type: 'jpeg', quality: 94 } : { path: abs, type: 'png' },
+      jpeg
+        ? { path: abs, type: 'jpeg', quality: 94 }
+        : { path: abs, type: 'png', omitBackground: Boolean(opts.transparent) },
     );
     await pg.close();
     written.push(relPath);

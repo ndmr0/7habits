@@ -71,6 +71,32 @@ export const FACEBOOK_COVER = {
   avatarGuard: 84, // px at 1x, measured up from the bottom edge
 };
 
+/**
+ * YouTube crops channel art harder than anywhere else in the kit. One 2560x1440
+ * upload is shown as:
+ *
+ *   TV       2560 x 1440   the whole thing
+ *   desktop  2560 x 423    a centre band, down to 1546 wide in a narrow window
+ *   mobile   1546 x 423    the centre band only
+ *
+ * So only the centred 1546x423 is guaranteed to survive — everything else is
+ * bleed. All type and marks stay inside `safe`; the rest of the frame is
+ * background that TV viewers happen to see.
+ *
+ * `watermark` is the small branding overlay burned into the player corner, and
+ * wants transparency rather than the aurora ground.
+ *
+ * Google changes these between releases; treat as guidance, edit here, rebuild.
+ */
+export const YOUTUBE = {
+  banner: { w: 2560, h: 1440 },
+  safe: { w: 1546, h: 423 },
+  tablet: { w: 1855, h: 423 },
+  avatar: 800,
+  watermark: 150,
+  thumb: { w: 1280, h: 720 },
+};
+
 export function hslToHex(h, s, l) {
   s /= 100;
   l /= 100;

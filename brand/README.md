@@ -5,7 +5,6 @@ Logo, app icon, and ready-to-upload social artwork for 7habits.
 - **[BRAND.md](BRAND.md)** — colours, type, the marks, and the rules
 - **[CONTENT-KIT.md](CONTENT-KIT.md)** — bio, hashtags, captions, and what to post
 - **[FACEBOOK-PAGE.md](FACEBOOK-PAGE.md)** — Page setup: fields, cover sizing, and copy
-- **[FACEBOOK-AGENT-PROMPT.md](FACEBOOK-AGENT-PROMPT.md)** — the same, as a brief to hand someone
 - `logo/` — vector marks and lockups (SVG)
 - `export/` — sized exports, ready to upload
 - `build/` — the generator; everything in `logo/` and `export/` comes from it
@@ -60,12 +59,41 @@ see [Rebuilding](#rebuilding).
 
 The TikTok habit and quote cards work as Reels covers unchanged.
 
-### X, YouTube, app, web
+### Facebook
+
+See [FACEBOOK-PAGE.md](FACEBOOK-PAGE.md) for Page fields and copy.
+
+| File | Size | Use |
+|---|---|---|
+| `facebook/profile-360.png` | 360×360 | Page profile picture |
+| `facebook/cover-1640x720.jpg` | 1640×720 | Page cover. Upload as-is — don't drag or zoom it. |
+| `facebook/cover-safe-areas-1640x720.jpg` | 1640×720 | Guide layer. Don't upload. |
+
+The cover carries no grid mark on purpose: the profile picture sits directly
+beneath it and already is the mark.
+
+### YouTube
+
+| File | Size | Use |
+|---|---|---|
+| `youtube/avatar-800.png` | 800×800 | Channel profile picture |
+| `youtube/banner-2560x1440.jpg` | 2560×1440 | Channel banner |
+| `youtube/banner-safe-areas-2560x1440.jpg` | 2560×1440 | Guide layer. Don't upload. |
+| `youtube/watermark-150.png` | 150×150 | Player watermark. Transparent PNG; uses the seven mark. |
+| `youtube/thumbnail-1280x720.jpg` | 1280×720 | Video thumbnail — "One habit at a time." |
+| `youtube/thumbnail-privacy-1280x720.jpg` | 1280×720 | Thumbnail — privacy angle |
+| `youtube/thumbnail-cycle-1280x720.jpg` | 1280×720 | Thumbnail — 49-day cycle angle |
+| `youtube/end-screen-1280x720.jpg` | 1280×720 | Outro card; right half left clear for end-screen elements |
+
+The end screen's right half is empty on purpose — that's where YouTube drops
+the video element and subscribe badge you add in Studio. Keep them there and
+nothing lands on type.
+
+### X, app, web
 
 | File | Size | Use |
 |---|---|---|
 | `x/header-1500x500.jpg` | 1500×500 | X profile header; bottom-left kept clear for the avatar |
-| `youtube/thumbnail-1280x720.jpg` | 1280×720 | Video thumbnail |
 | `app-icon/appstore-1024.png` | 1024×1024 | App Store icon. Full-bleed, no alpha, no baked corners — iOS masks it. |
 | `web/og-1200x630.jpg` | 1200×630 | Link preview card |
 | `web/apple-touch-icon-180.png` | 180×180 | iOS home screen |
@@ -94,6 +122,22 @@ releases — treat them as guidance, not gospel. They live in `TIKTOK_SAFE` in
 Every card in `export/tiktok/` already respects them, except `cover-brand` and
 the Instagram story, which are centred in the full frame because covers are
 shown uncropped.
+
+### Facebook and YouTube crop too
+
+Both render one upload at several sizes, so both ship a `*-safe-areas-*.jpg`
+guide alongside the artwork. Neither guide is for uploading — they're overlay
+layers with coloured zone boxes on them.
+
+| | Upload | Guaranteed visible | Lives in |
+|---|---|---|---|
+| Facebook cover | 1640×720 | 640×312 at 1× (desktop crops 820×312, mobile 640×360) | `FACEBOOK_COVER` |
+| YouTube banner | 2560×1440 | 1546×423 centred (desktop 2560×423, TV the whole frame) | `YOUTUBE` |
+
+YouTube is the harsher of the two: only about 30% of the uploaded height
+survives on a phone, and everything outside the centre band is bleed that only
+TV viewers ever see. Both objects are in `build/tokens.mjs` — the artwork and
+its guide derive from the same numbers, so moving one moves both.
 
 ---
 

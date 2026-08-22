@@ -10,6 +10,7 @@ import {
   HABITS,
   TIKTOK_SAFE,
   FACEBOOK_COVER,
+  YOUTUBE,
   auroraCss,
   habitHex,
   cell,
@@ -500,7 +501,18 @@ export function fbCoverSafeAreas({ fontFace } = {}) {
   });
 }
 
-export function ytThumb({ w = 1280, h = 720, fontFace }) {
+/**
+ * Video thumbnail. Type runs large on purpose — these are judged at a couple of
+ * hundred pixels wide in a sidebar, not at 1280.
+ */
+export function ytThumb({
+  w = 1280,
+  h = 720,
+  fontFace,
+  kicker = 'Seven days',
+  headline = 'One habit<br/>at a time.',
+  accent = habitHex(2),
+} = {}) {
   return page({
     w,
     h,
@@ -509,11 +521,169 @@ export function ytThumb({ w = 1280, h = 720, fontFace }) {
       <div class="layer" style="display:flex;align-items:center;gap:64px;padding:0 88px">
         ${gridAt(340, { gap: 1.5, radius: 0.24 })}
         <div style="flex:1">
-          <div style="font-size:44px;font-weight:700;letter-spacing:.16em;color:${habitHex(
-            2,
-          )};text-transform:uppercase">Seven days</div>
-          <div style="font-size:118px;font-weight:800;letter-spacing:-.05em;line-height:.98;margin-top:16px">One habit<br/>at a time.</div>
+          <div style="font-size:44px;font-weight:700;letter-spacing:.16em;color:${accent};text-transform:uppercase">${kicker}</div>
+          <div style="font-size:118px;font-weight:800;letter-spacing:-.05em;line-height:.98;margin-top:16px">${headline}</div>
           <div style="margin-top:30px">${rampStrip(360, 12)}</div>
+        </div>
+      </div>`,
+  });
+}
+
+/* ----------------------------------------------------------------- youtube */
+
+/** Pixel geometry of the channel banner, shared by the art and its guide. */
+function ytBannerBox() {
+  const { banner, safe, tablet } = YOUTUBE;
+  return {
+    w: banner.w,
+    h: banner.h,
+    safe,
+    tablet,
+    trimX: (banner.w - safe.w) / 2,
+    trimY: (banner.h - safe.h) / 2,
+    tabletTrimX: (banner.w - tablet.w) / 2,
+  };
+}
+
+/**
+ * Channel banner. Everything that has to be read lives in the centred
+ * 1546x423 band; the rest of the 2560x1440 frame is bleed that only TV
+ * viewers ever see, so it carries nothing but the aurora.
+ */
+export function ytBanner({ fontFace } = {}) {
+  const box = ytBannerBox();
+  return page({
+    w: box.w,
+    h: box.h,
+    fontFace,
+    body: `<div class="aurora"></div>
+      <div class="layer" style="display:grid;place-items:center">
+        <div style="display:flex;align-items:center;gap:56px;
+                    width:${box.safe.w}px;height:${box.safe.h}px;justify-content:center">
+          ${gridAt(268, { gap: 1.5, radius: 0.24 })}
+          <div>
+            <div style="font-size:116px;font-weight:800;letter-spacing:-.05em;line-height:1">7habits</div>
+            <div style="font-size:37px;font-weight:500;color:${INK.muted};margin-top:18px;letter-spacing:-.01em">${
+              BRAND.tagline
+            }</div>
+            <div style="margin-top:24px">${rampStrip(400, 12)}</div>
+          </div>
+        </div>
+      </div>`,
+  });
+}
+
+/** Overlay showing which band each device keeps. Guide only — never upload. */
+export function ytBannerSafeAreas({ fontFace } = {}) {
+  const box = ytBannerBox();
+  const tag = (style, text, color) =>
+    `<div style="position:absolute;${style};font-size:30px;font-weight:700;
+       letter-spacing:.1em;color:${color};text-transform:uppercase">${text}</div>`;
+
+  return page({
+    w: box.w,
+    h: box.h,
+    fontFace,
+    body: `<div class="aurora"></div>
+      <div class="layer" style="display:grid;place-items:center;opacity:.18">${gridAt(560, {
+        gap: 1.5,
+        radius: 0.24,
+      })}</div>
+
+      <!-- everything outside the centre band is TV-only bleed -->
+      <div style="position:absolute;left:0;top:0;width:100%;height:${
+        box.trimY
+      }px;background:rgba(255,64,84,.20)"></div>
+      <div style="position:absolute;left:0;bottom:0;width:100%;height:${
+        box.trimY
+      }px;background:rgba(255,64,84,.20)"></div>
+
+      <!-- desktop keeps the full width of the band; mobile trims to 1546 -->
+      <div style="position:absolute;left:0;top:${box.trimY}px;width:${box.trimX}px;
+                  height:${box.safe.h}px;background:rgba(255,176,64,.20)"></div>
+      <div style="position:absolute;right:0;top:${box.trimY}px;width:${box.trimX}px;
+                  height:${box.safe.h}px;background:rgba(255,176,64,.20)"></div>
+
+      <div style="position:absolute;left:${box.tabletTrimX}px;top:${box.trimY}px;
+                  width:${box.tablet.w}px;height:${box.safe.h}px;
+                  border:2px dashed rgba(255,255,255,.45)"></div>
+
+      <div style="position:absolute;left:${box.trimX}px;top:${box.trimY}px;
+                  width:${box.safe.w}px;height:${box.safe.h}px;
+                  border:4px solid rgba(90,240,160,.9);border-radius:10px;
+                  display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div style="font-size:42px;font-weight:800;letter-spacing:.12em;color:#7ef0b4">ALWAYS VISIBLE</div>
+        <div style="font-size:30px;font-weight:600;color:#8fdcb4;margin-top:10px">${
+          box.safe.w
+        } &times; ${box.safe.h} &middot; every device</div>
+      </div>
+
+      ${tag(`left:${box.trimX + 20}px;top:${box.trimY / 2 - 20}px`, 'TV only — bleed', '#ffb3bd')}
+      ${tag(`left:24px;top:50%`, 'desktop', '#ffd9a8')}
+      ${tag(
+        `left:${box.tabletTrimX + 20}px;top:${box.trimY + box.safe.h + 28}px`,
+        'dashed = tablet 1855',
+        '#e6e6f0',
+      )}
+
+      <div style="position:absolute;right:26px;bottom:${box.trimY / 2 - 14}px;font-size:28px;
+                  font-weight:600;color:${INK.muted}">${box.w} &times; ${
+                    box.h
+                  } &middot; guide only, do not publish</div>`,
+  });
+}
+
+/**
+ * Player watermark. Rendered with a transparent ground (the build passes
+ * `omitBackground`), since it sits over whatever frame is playing — so it uses
+ * the seven mark, which holds at 150px where 49 cells would not.
+ */
+export function ytWatermark({ fontFace } = {}) {
+  const size = YOUTUBE.watermark;
+  return page({
+    w: size,
+    h: size,
+    fontFace,
+    bg: 'transparent',
+    body: (() => {
+      const mark = Math.round(size * 0.86);
+      return `<div class="layer" style="display:grid;place-items:center">
+      ${svgBox(
+        sevenMarkSvg().replace('width="100" height="100"', `width="${mark}" height="${mark}"`),
+        `width:${mark}px;height:${mark}px`,
+      )}
+    </div>`;
+    })(),
+  });
+}
+
+/**
+ * End screen for the last 5–20 seconds of a video.
+ *
+ * YouTube's own end-screen elements are dropped on top in Studio, so the right
+ * half is left deliberately empty: room for one video element and the
+ * subscribe badge without either landing on type.
+ */
+export function ytEndScreen({ fontFace } = {}) {
+  const { w, h } = YOUTUBE.thumb;
+  return page({
+    w,
+    h,
+    fontFace,
+    body: `<div class="aurora"></div>
+      <div class="layer" style="display:flex;align-items:center;padding:0 76px">
+        <div style="width:54%">
+          <div style="font-size:82px;font-weight:800;letter-spacing:-.045em;line-height:1">7habits</div>
+          <div style="font-size:31px;font-weight:500;color:${INK.muted};margin-top:16px">${
+            BRAND.tagline
+          }</div>
+          <div style="margin-top:24px">${rampStrip(300, 11)}</div>
+          <div style="font-size:25px;font-weight:600;color:${INK.paper};margin-top:30px">${
+            CTA.store
+          }</div>
+          <div style="font-size:21px;font-weight:500;color:${INK.dim};margin-top:8px">${
+            CTA.privacy
+          }</div>
         </div>
       </div>`,
   });
