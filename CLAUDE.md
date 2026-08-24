@@ -1,7 +1,20 @@
 # 7habits
 
-The marketing site for the 7habits iOS app (`index.html`, `privacy.html`,
-`support.html`, `terms.html`), plus the complete brand kit in `brand/`.
+The public GitHub Pages site for the 7habits iOS app — a splash page
+(`index.html`) plus the legal and support pages (`privacy.html`, `terms.html`,
+`support.html`) — and the complete brand kit in `brand/`.
+
+**These URLs are baked into the App Store listing and the shipped app. Never
+rename this repo, and never move or rename those four pages.**
+
+This is not the marketing site. Related repos:
+
+| Work about… | Repo |
+|---|---|
+| App features, iOS build, App Store submission, IAPs, listing copy | `ndmr0/7habits-app` |
+| Landing page at 7habits.app | source in `7habits-app`, built into `ndmr0/7habits-site` (Vercel) |
+| Ads, hooks, social posts, captions, content batches | `ndmr0/7habits-content` |
+| Privacy / Terms / Support text, and the brand kit | this repo |
 
 ## Producing social, marketing, or brand content
 
